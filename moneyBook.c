@@ -33,6 +33,9 @@ int option() {
     printf("1. write\n");
     printf("2. read\n");
     printf("3. plan\n");
+    printf("4. download\n");
+    printf("5. QUIT\n");
+    printf("OPTION : ");
 
     scanf("%d", &opt);
     return opt;
@@ -45,7 +48,7 @@ void moneyWrite() {
     FILE *wfp;
     int c;
 
-    char str[50];
+    char str[100];
     char *a[3];
 
     int i = 0;
@@ -53,27 +56,54 @@ void moneyWrite() {
     printf("===== CATEGORY =====\n");
     printf("entertain     tax\n");
 
-    printf("input your money spend\n");
-    scanf("%s", str);
-    a[0] = strtok(str, " ");
-    a[1] = strtok(NULL, " ");
-    a[2] = strtok(NULL, " ");
-    sum = atoi(a[2]);
+    printf("input your money spend : ");
+    scanf(" %[^\n]s", str);
 
-    //FILE* write
+    printf("%s\n", str);
+    
 
-    if((wfp = fopen("moneyWrite.txt", "a")) == NULL) {
-        perror("fopen");
-        exit(1);
+    if(strcmp(str, "quit") == 0) {
+        exit(0);
     }
+    else {
+       //FILE* write
 
-    fputs(str, wfp);
+        if((wfp = fopen("moneyWrite.txt", "a")) == NULL) {
+            perror("fopen");
+            exit(1);
+        }
+
+        fputs(str, wfp);
+        fputs("\n", wfp);
+
+        a[0] = strtok(str, " ");
+        a[1] = strtok(NULL, " ");
+        a[2] = strtok(NULL, " ");
+        sum = atoi(a[2]);
+
+        fclose(wfp);
+    }
 }
 
 void moneyRead() {
     // FILE *
     // print_total_spend()
     // advice()
+    int opt;
+
+    printf("===== READ OPTION =====\n");
+    printf("1. TOTAL SPEND\n");
+    printf("2. ADVICE\n");
+
+    scanf("%d", &opt);
+    switch(opt) {
+        case 1:
+            print_total_spend();
+            break;
+        case 2:
+            advice();
+            break;
+    }
 }
 
 void moneyPlan() {
@@ -85,27 +115,57 @@ void moneyPlan() {
 void download() {
     // download moneyRead
     // download moneyPlan
+    
+}
+
+void print_total_spend() {
+    FILE *rfp;
+    char str[100];
+
+    if((rfp = fopen("moneyWrite.txt", "r")) == NULL) {
+        perror("fopen");
+        exit(1);
+    }
+
+    while(fgets(str, 100, rfp) != NULL) {
+        printf("%s", str);
+    }
+
+    fclose(rfp);
+}
+
+void advice() {
+
 }
 
 int main(void) {
     int opt;
 
-    opt = option();
+    while(1) {
 
-    switch(opt) {
-        case 1:
-            moneyWrite();
-            break;
-        case 2:
-            moneyRead();
-            break;
-        case 3:
-            moneyPlan();
-            break;
-        case 4:
-            download();
-            break;
+        opt = option();
+
+        switch(opt) {
+            case 1:
+                moneyWrite();
+                sleep(1);
+                break;
+            case 2:
+                moneyRead();
+                sleep(1);
+                break;
+            case 3:
+                moneyPlan();
+                sleep(1);
+                break;
+            case 4:
+                download();
+                sleep(1);
+                break;
+            case 5:
+                printf("===== QUIT PROGRAM =====\n");
+                exit(0);
+        }
     }
-
-
+    return 0;
 }
